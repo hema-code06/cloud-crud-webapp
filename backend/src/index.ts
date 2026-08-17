@@ -23,7 +23,6 @@ async function main() {
     })
   );
 
-  // --- Session store: Redis in production, in-memory locally ---
   let sessionStore: session.Store | undefined = undefined;
 
   if (process.env.REDIS_URL) {
@@ -54,7 +53,6 @@ async function main() {
       },
     })
   );
-  // --- end session store ---
 
   app.use("/api/auth", authRoutes);
   app.use("/api/objects", objectRoutes);

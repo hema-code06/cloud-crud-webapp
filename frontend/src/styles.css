@@ -157,9 +157,9 @@ button:active:not(:disabled) {
 }
 
 .btn-small {
-  padding: 4px 10px;
-  font-size: 12px;
-  margin-right: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  margin-right: 4px;
 }
 
 button:focus-visible {
@@ -212,7 +212,6 @@ input:focus {
   padding: 0 24px;
 }
 
-/* ---------- Table ---------- */
 table {
   width: calc(100% - 48px);
   margin: 0 24px;
@@ -222,18 +221,18 @@ table {
   border: 1px solid var(--sf-border);
   box-shadow: 0 1px 3px rgba(3, 45, 96, 0.05);
   overflow: hidden;
+  table-layout: fixed;
 }
 
 th,
 td {
   text-align: left;
-  padding: 11px 14px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--sf-border);
-  font-size: 13px;
-  white-space: nowrap;
-  max-width: 220px;
+  font-size: 12.5px;
+  white-space: normal;
+  word-break: break-word;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 th {
@@ -242,8 +241,14 @@ th {
   color: var(--sf-blue-dark);
   border-bottom: 1px solid var(--sf-border);
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 10.5px;
   letter-spacing: 0.3px;
+}
+
+th:last-child,
+td:last-child {
+  white-space: nowrap;
+  width: 1px;
 }
 
 tbody tr {
