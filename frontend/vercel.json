@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://sf-crud-app-qlzj.onrender.com/api/:path*"
+      "destination": "https://cloud-crud-webapp.onrender.com/api/:path*"
     }
   ]
 } 
