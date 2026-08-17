@@ -1,0 +1,266 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Salesforce Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  background: #f3f2f2;
+  color: #181818;
+}
+
+.login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  gap: 8px;
+  text-align: center;
+}
+
+.app-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+}
+
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  margin-bottom: 24px;
+}
+
+.header-bar h1 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.2px;
+}
+
+.header-bar h1::before {
+  content: "";
+  width: 24px;
+  height: 24px;
+  background-image: url("/favicon.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+button {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 400;
+  font-family: inherit;
+  transition: background 0.1s ease;
+}
+
+.btn-primary {
+  background: #0176d3;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #014486;
+}
+
+.btn-primary:disabled {
+  background: #c9c7c5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #0176d3;
+  border: 1px solid #0176d3;
+}
+
+.btn-secondary:hover {
+  background: #f3f8fd;
+}
+
+.btn-danger {
+  background: #ffffff;
+  color: #ba0517;
+  border: 1px solid #ba0517;
+}
+
+.btn-danger:hover {
+  background: #fdecec;
+}
+
+.btn-small {
+  padding: 4px 10px;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+
+select,
+input {
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid #c9c7c5;
+  font-size: 13px;
+  font-family: inherit;
+  background: #ffffff;
+  color: #181818;
+}
+
+select:focus,
+input:focus {
+  outline: none;
+  border-color: #0176d3;
+  box-shadow: 0 0 0 1px #0176d3;
+}
+
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0 24px;
+}
+
+.toolbar span {
+  font-size: 12px;
+  color: #5c5c5c;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.app-shell>div[style] {
+  padding: 0 24px;
+}
+
+
+table {
+  width: calc(100% - 48px);
+  margin: 0 24px;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #4b93ff;
+  overflow: hidden;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 11px 14px;
+  border-bottom: 1px solid #dadbdd;
+  font-size: 13px;
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  background: #85b4fa;
+  font-weight: 600;
+  color: #444444;
+  border-bottom: 1px solid #042dfa;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+tbody tr:hover {
+  background: #f3f8fd;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.loading-row {
+  text-align: center;
+  padding: 16px;
+  color: #5c5c5c;
+  font-size: 13px;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 24, 44, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 6px;
+  width: 440px;
+  max-height: 82vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #032d60;
+  padding: 16px 24px;
+}
+
+.modal form {
+  padding: 20px 24px 24px;
+}
+
+.form-field {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #3e3e3c;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  border-top: 1px solid #dddbda;
+  padding-top: 16px;
+}
+
+.error-banner {
+  background: #fdecec;
+  color: #a3121a;
+  border-left: 4px solid #ba0517;
+  padding: 10px 14px;
+  border-radius: 2px;
+  font-size: 13px;
+  margin: 0 24px 16px;
+}
+
+.modal .error-banner {
+  margin: 0 0 16px;
+}
