@@ -33,7 +33,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <div className="header-bar">
-        <h1>Salesforce CRUD App</h1>
+        <h1>Salesforce Cloud CRUD</h1>
         <button className="btn-secondary" onClick={handleLogout}>
           Logout
         </button>
