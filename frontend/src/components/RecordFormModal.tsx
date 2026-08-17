@@ -5,6 +5,7 @@ interface Props {
   objectName: string;
   fields: SFField[];
   initialValues?: SFRecord | null;
+  readOnly?: boolean;
   onCancel: () => void;
   onSubmit: (values: SFRecord) => Promise<void>;
 }
@@ -35,6 +36,7 @@ export default function RecordFormModal({
   objectName,
   fields,
   initialValues,
+  readOnly = false,
   onCancel,
   onSubmit,
 }: Props) {
@@ -70,7 +72,11 @@ export default function RecordFormModal({
     <div className="modal-overlay">
       <div className="modal">
         <h2>
-          {isEdit ? `Edit ${objectName}` : `New ${objectName}`}
+          {readOnly
+            ? `View ${objectName}`
+            : isEdit
+              ? `Edit ${objectName}`
+              : `New ${objectName}`}
         </h2>
 
         {error && <div className="error-banner">{error}</div>}
@@ -87,7 +93,8 @@ export default function RecordFormModal({
                     {field.required ? " *" : ""}
                   </label>
                   <select
-                    required={field.required}
+                    required={!readOnly && field.required}
+                    disabled={readOnly}
                     value={values[field.name] ?? ""}
                     onChange={(e) => handleChange(field.name, e.target.value)}
                   >
@@ -109,6 +116,7 @@ export default function RecordFormModal({
                     <input
                       type="checkbox"
                       checked={!!values[field.name]}
+                      disabled={readOnly}
                       onChange={(e) => handleChange(field.name, e.target.checked)}
                     />{" "}
                     {field.label}
@@ -125,9 +133,10 @@ export default function RecordFormModal({
                 </label>
                 <input
                   type={inputType}
-                  required={field.required}
+                  required={!readOnly && field.required}
                   value={values[field.name] ?? ""}
                   onChange={(e) => handleChange(field.name, e.target.value)}
+                  readOnly={readOnly}
                 />
               </div>
             );
@@ -135,11 +144,14 @@ export default function RecordFormModal({
 
           <div className="form-actions">
             <button type="button" className="btn-secondary" onClick={onCancel}>
-              Cancel
+              Close
             </button>
-            <button type="submit" className="btn-primary" disabled={submitting}>
-              {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create"}
-            </button>
+
+            {!readOnly && (
+              <button type="submit" className="btn-primary" disabled={submitting}>
+                {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create"}
+              </button>
+            )}
           </div>
         </form>
       </div>

@@ -15,6 +15,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
 
   const [showForm, setShowForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState<SFRecord | null>(null);
+  const [viewingRecord, setViewingRecord] = useState<SFRecord | null>(null);
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,10 +135,18 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
                 <td>
                   <button
                     className="btn-secondary btn-small"
+                    onClick={() => setViewingRecord(record)}
+                  >
+                    View
+                  </button>
+
+                  <button
+                    className="btn-secondary btn-small"
                     onClick={() => setEditingRecord(record)}
                   >
                     Edit
                   </button>
+
                   <button
                     className="btn-danger btn-small"
                     onClick={() => handleDelete(record)}
@@ -168,7 +177,16 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           onSubmit={handleCreate}
         />
       )}
-
+      {viewingRecord && (
+        <RecordFormModal
+          objectName={objectName}
+          fields={fields}
+          initialValues={viewingRecord}
+          readOnly
+          onCancel={() => setViewingRecord(null)}
+          onSubmit={async () => { }}
+        />
+      )}
       {editingRecord && (
         <RecordFormModal
           objectName={objectName}
