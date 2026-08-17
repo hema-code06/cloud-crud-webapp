@@ -161,7 +161,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
       )}
 
       <div ref={sentinelRef} className="sentinel" />
-      {loading && <div className="loading-row">Loading more records...</div>}
+      {loading && <div className="loading-row loading-row--active">Loading more records...</div>}
       {!hasMore && records.length > 0 && (
         <div className="loading-row">No more records.</div>
       )}

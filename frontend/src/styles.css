@@ -276,7 +276,7 @@ tbody tr:last-child td {
   font-size: 13px;
 }
 
-.loading-row::before {
+.loading-row--active::before {
   content: "";
   display: inline-block;
   width: 12px;
