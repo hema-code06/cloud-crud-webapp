@@ -1,909 +1,377 @@
-/* =========================================================
-   SALESFORCE CRUD APP — LIGHTNING STYLE UI
-   Login styles intentionally left untouched.
-   ========================================================= */
-
 * {
   box-sizing: border-box;
 }
 
 :root {
   --sf-blue: #0176d3;
-  --sf-blue-dark: #014486;
-  --sf-blue-light: #eef6ff;
-  --sf-navy: #032d60;
-
-  --text-primary: #181818;
-  --text-secondary: #5c5c5c;
-  --text-muted: #706e6b;
-
-  --border: #dddbda;
-  --border-light: #e5e5e5;
-
-  --surface: #ffffff;
-  --surface-soft: #f8f9fb;
-  --page-bg: #f3f6f9;
-
-  --success: #2e844a;
-  --danger: #ba0517;
-  --danger-light: #fdecec;
-
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.10);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.16);
-
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-
-  --transition-fast: 0.15s ease;
-  --transition: 0.22s ease;
+  --sf-blue-hover: #014486;
+  --sf-blue-dark: #032d60;
+  --sf-blue-tint: #f3f8fd;
+  --sf-blue-tint-2: #eaf3fd;
+  --sf-danger: #ba0517;
+  --sf-danger-hover: #8e0512;
+  --sf-danger-tint: #fdecec;
+  --sf-border: #dddbda;
+  --sf-border-strong: #c9c7c5;
+  --sf-text: #181818;
+  --sf-text-muted: #5c5c5c;
+  --sf-bg: #f3f2f2;
+  --sf-surface: #ffffff;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-/* =========================================================
-   GLOBAL
-   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
 
 body {
   margin: 0;
-  font-family:
-    "Salesforce Sans",
-    "Segoe UI",
-    -apple-system,
-    BlinkMacSystemFont,
-    Helvetica,
-    Arial,
-    sans-serif;
-
-  background:
-    linear-gradient(
-      180deg,
-      #f8fafc 0%,
-      #f3f6f9 45%,
-      #eef1f5 100%
-    );
-
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
+  font-family: "Salesforce Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  background: var(--sf-bg);
+  color: var(--sf-text);
 }
 
+/* ---------- Login (unchanged) ---------- */
+.login-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  gap: 8px;
+  text-align: center;
+}
 
-/* =========================================================
-   MAIN APP
-   ========================================================= */
-
+/* ---------- App shell ---------- */
 .app-shell {
-  width: min(1400px, 100%);
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0 60px;
-
-  animation: appFadeIn 0.45s ease both;
+  padding: 0 0 40px;
+  animation: fadeIn 0.35s var(--ease);
 }
 
-
-/* =========================================================
-   HEADER
-   ========================================================= */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .header-bar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 12px 24px;
+  margin-bottom: 24px;
+  background: var(--sf-surface);
+  border-bottom: 1px solid var(--sf-border);
+  box-shadow: 0 1px 3px rgba(3, 45, 96, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  animation: slideDown 0.35s var(--ease);
+}
 
-  min-height: 64px;
-  padding: 12px 28px;
-  margin-bottom: 26px;
-
-  background: rgba(255, 255, 255, 0.94);
-  border-bottom: 1px solid var(--border);
-
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .header-bar h1 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-
   margin: 0;
-
   display: flex;
   align-items: center;
-  gap: 11px;
-
-  letter-spacing: 0.1px;
-  color: var(--sf-navy);
+  gap: 10px;
+  letter-spacing: 0.2px;
+  color: var(--sf-blue-dark);
 }
 
 .header-bar h1::before {
   content: "";
-
-  width: 30px;
-  height: 30px;
-
+  width: 24px;
+  height: 24px;
   background-image: url("/favicon.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-
-  flex-shrink: 0;
-
-  transition:
-    transform 0.25s ease,
-    filter 0.25s ease;
 }
 
-.header-bar h1:hover::before {
-  transform: rotate(-4deg) scale(1.06);
-}
-
-
-/* =========================================================
-   BUTTON BASE
-   ========================================================= */
-
+/* ---------- Buttons ---------- */
 button {
   cursor: pointer;
-
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-
+  border-radius: 4px;
   padding: 8px 16px;
-
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
-
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    transform var(--transition-fast);
-
-  user-select: none;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease), transform 0.1s var(--ease);
 }
 
-button:hover {
-  transform: translateY(-1px);
+button:active:not(:disabled) {
+  transform: scale(0.97);
 }
-
-button:active {
-  transform: translateY(0) scale(0.98);
-}
-
-button:focus-visible {
-  outline: none;
-
-  box-shadow:
-    0 0 0 2px #ffffff,
-    0 0 0 4px rgba(1, 118, 211, 0.55);
-}
-
-button:disabled {
-  cursor: not-allowed;
-  transform: none;
-}
-
-
-/* =========================================================
-   PRIMARY BUTTON
-   ========================================================= */
 
 .btn-primary {
-  background: linear-gradient(
-    180deg,
-    #168ee5 0%,
-    #0176d3 100%
-  );
-
+  background: var(--sf-blue);
   color: #ffffff;
-
-  border-color: #0176d3;
-
-  box-shadow:
-    0 1px 2px rgba(1, 118, 211, 0.20);
+  box-shadow: 0 1px 2px rgba(1, 118, 211, 0.25);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(
-    180deg,
-    #0b82d9 0%,
-    #014486 100%
-  );
-
-  border-color: #014486;
-
-  box-shadow:
-    0 4px 10px rgba(1, 118, 211, 0.22);
-}
-
-.btn-primary:active {
-  box-shadow: none;
+.btn-primary:hover:not(:disabled) {
+  background: var(--sf-blue-hover);
+  box-shadow: 0 2px 8px rgba(1, 118, 211, 0.32);
 }
 
 .btn-primary:disabled {
   background: #c9c7c5;
-  border-color: #c9c7c5;
-  color: #ffffff;
   box-shadow: none;
+  cursor: not-allowed;
 }
-
-
-/* =========================================================
-   SECONDARY BUTTON
-   ========================================================= */
 
 .btn-secondary {
   background: #ffffff;
   color: var(--sf-blue);
-
-  border: 1px solid #8e8e8e;
-
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--sf-blue);
 }
 
-.btn-secondary:hover {
-  color: var(--sf-blue-dark);
-
-  background: var(--sf-blue-light);
-
-  border-color: var(--sf-blue);
-
-  box-shadow:
-    0 3px 8px rgba(1, 118, 211, 0.12);
+.btn-secondary:hover:not(:disabled) {
+  background: var(--sf-blue-tint);
+  box-shadow: 0 1px 4px rgba(1, 118, 211, 0.18);
 }
-
-
-/* =========================================================
-   DANGER BUTTON
-   ========================================================= */
 
 .btn-danger {
   background: #ffffff;
-  color: var(--danger);
-
-  border: 1px solid #d83a46;
-
-  box-shadow: var(--shadow-sm);
+  color: var(--sf-danger);
+  border: 1px solid var(--sf-danger);
 }
 
-.btn-danger:hover {
-  background: var(--danger-light);
-  color: #8e030f;
-
-  border-color: var(--danger);
-
-  box-shadow:
-    0 3px 8px rgba(186, 5, 23, 0.12);
+.btn-danger:hover:not(:disabled) {
+  background: var(--sf-danger-tint);
+  color: var(--sf-danger-hover);
+  box-shadow: 0 1px 4px rgba(186, 5, 23, 0.18);
 }
-
-
-/* =========================================================
-   SMALL ACTION BUTTONS
-   ========================================================= */
 
 .btn-small {
-  padding: 5px 11px;
+  padding: 4px 10px;
   font-size: 12px;
-
-  margin-right: 5px;
-
-  min-height: 29px;
+  margin-right: 6px;
 }
 
-
-/* =========================================================
-   OBJECT SELECTOR
-   ========================================================= */
-
-.app-shell > div[style] {
-  margin: 0 24px 22px !important;
-  padding: 18px 20px !important;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-
-  box-shadow: var(--shadow-sm);
-
-  animation: slideUp 0.4s ease both;
+button:focus-visible {
+  outline: 2px solid var(--sf-blue);
+  outline-offset: 2px;
 }
 
-
-/* =========================================================
-   INPUTS / SELECTS
-   ========================================================= */
-
+/* ---------- Inputs ---------- */
 select,
 input {
-  padding: 9px 11px;
-
-  border-radius: var(--radius-sm);
-  border: 1px solid #c9c7c5;
-
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--sf-border-strong);
   font-size: 13px;
   font-family: inherit;
-
   background: #ffffff;
-  color: var(--text-primary);
-
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    background var(--transition-fast);
+  color: var(--sf-text);
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 select:hover,
 input:hover {
-  border-color: #8e8e8e;
+  border-color: var(--sf-blue);
 }
 
 select:focus,
 input:focus {
   outline: none;
-
   border-color: var(--sf-blue);
-
-  box-shadow:
-    0 0 0 1px var(--sf-blue),
-    0 2px 5px rgba(1, 118, 211, 0.08);
+  box-shadow: 0 0 0 3px rgba(1, 118, 211, 0.15);
 }
 
-input[readonly] {
-  background: #f7f8fa;
-  color: #444444;
-  cursor: default;
-}
-
-select:disabled,
-input:disabled {
-  background: #f3f3f3;
-  color: #5c5c5c;
-  cursor: not-allowed;
-}
-
-
-/* =========================================================
-   TOOLBAR
-   ========================================================= */
-
+/* ---------- Toolbar ---------- */
 .toolbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  margin: 0 24px 14px;
-  padding: 0;
-
-  animation: slideUp 0.45s ease both;
+  margin-bottom: 16px;
+  padding: 0 24px;
 }
 
 .toolbar span {
-  font-size: 11px;
-  font-weight: 600;
-
-  color: var(--text-muted);
-
+  font-size: 12px;
+  color: var(--sf-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.4px;
 }
 
+.app-shell > div[style] {
+  padding: 0 24px;
+}
 
-/* =========================================================
-   TABLE CONTAINER
-   ========================================================= */
-
+/* ---------- Table ---------- */
 table {
   width: calc(100% - 48px);
-
   margin: 0 24px;
-
-  border-collapse: separate;
-  border-spacing: 0;
-
-  background: var(--surface);
-
-  border: 1px solid var(--border);
-
-  border-radius: var(--radius-lg);
-
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid var(--sf-border);
+  box-shadow: 0 1px 3px rgba(3, 45, 96, 0.05);
   overflow: hidden;
-
-  box-shadow: var(--shadow-sm);
-
-  animation: tableAppear 0.45s ease both;
 }
-
-
-/* =========================================================
-   TABLE CELLS
-   ========================================================= */
 
 th,
 td {
   text-align: left;
-
-  padding: 12px 14px;
-
-  border-bottom: 1px solid #e5e5e5;
-
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--sf-border);
   font-size: 13px;
-
   white-space: nowrap;
-
-  max-width: 240px;
-
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 th {
-  position: sticky;
-  top: 64px;
-  z-index: 5;
-
-  background: #f3f6f9;
-
+  background: var(--sf-blue-tint-2);
   font-weight: 600;
-
-  color: #3e3e3c;
-
-  border-bottom: 1px solid #c9c7c5;
-
+  color: var(--sf-blue-dark);
+  border-bottom: 1px solid var(--sf-border);
   text-transform: uppercase;
-
-  font-size: 10px;
-
-  letter-spacing: 0.6px;
-}
-
-td {
-  background: #ffffff;
-  color: #181818;
+  font-size: 11px;
+  letter-spacing: 0.3px;
 }
 
 tbody tr {
-  transition:
-    background var(--transition-fast),
-    box-shadow var(--transition-fast);
+  animation: rowIn 0.25s var(--ease);
+  transition: background 0.15s var(--ease);
 }
 
-tbody tr:hover td {
-  background: #f7fbff;
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 tbody tr:hover {
-  box-shadow:
-    inset 3px 0 0 var(--sf-blue);
+  background: var(--sf-blue-tint);
 }
 
 tbody tr:last-child td {
   border-bottom: none;
 }
 
-
-/* =========================================================
-   ACTION COLUMN
-   ========================================================= */
-
-th:last-child,
-td:last-child {
-  min-width: 190px;
-}
-
-td:last-child {
-  white-space: nowrap;
-}
-
-
-/* =========================================================
-   SENTINEL / LOADING
-   ========================================================= */
-
+/* ---------- Pagination / loading ---------- */
 .sentinel {
   height: 1px;
 }
 
 .loading-row {
   text-align: center;
-
-  padding: 18px;
-
-  color: var(--text-secondary);
-
+  padding: 16px;
+  color: var(--sf-text-muted);
   font-size: 13px;
-
-  animation: fadeIn 0.3s ease both;
 }
 
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
-.error-banner {
-  background: #fff1f1;
-
-  color: #a3121a;
-
-  border: 1px solid #f0b5b8;
-  border-left: 4px solid var(--danger);
-
-  padding: 11px 14px;
-
-  border-radius: var(--radius-sm);
-
-  font-size: 13px;
-
-  margin: 0 24px 16px;
-
-  animation: errorAppear 0.3s ease both;
+.loading-row::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  border: 2px solid var(--sf-border-strong);
+  border-top-color: var(--sf-blue);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
 }
 
-.modal .error-banner {
-  margin: 0 0 16px;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-
-/* =========================================================
-   MODAL OVERLAY
-   ========================================================= */
-
+/* ---------- Modal ---------- */
 .modal-overlay {
   position: fixed;
-
   inset: 0;
-
-  background: rgba(3, 45, 96, 0.32);
-
+  background: rgba(8, 24, 44, 0.5);
   display: flex;
-
   align-items: center;
   justify-content: center;
-
-  padding: 24px;
-
   z-index: 50;
-
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-
-  animation: overlayFade 0.2s ease both;
+  animation: overlayIn 0.2s var(--ease);
 }
 
-
-/* =========================================================
-   MODAL
-   ========================================================= */
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .modal {
   background: #ffffff;
-
-  border-radius: var(--radius-lg);
-
-  width: min(500px, 100%);
-
-  max-height: 86vh;
-
+  border-radius: 6px;
+  width: 440px;
+  max-height: 82vh;
   overflow-y: auto;
-
-  border: 1px solid rgba(0, 0, 0, 0.08);
-
-  box-shadow: var(--shadow-lg);
-
-  animation: modalEnter 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  box-shadow: 0 8px 28px rgba(3, 45, 96, 0.28);
+  animation: modalIn 0.22s var(--ease);
 }
 
-
-/* =========================================================
-   MODAL HEADER
-   ========================================================= */
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 
 .modal h2 {
   margin: 0;
-
-  font-size: 17px;
-
+  font-size: 16px;
   font-weight: 600;
-
   color: #ffffff;
-
-  background:
-    linear-gradient(
-      135deg,
-      #032d60 0%,
-      #0b5cab 100%
-    );
-
-  padding: 17px 24px;
-
-  letter-spacing: 0.1px;
+  background: var(--sf-blue-dark);
+  padding: 16px 24px;
 }
-
-
-/* =========================================================
-   MODAL FORM
-   ========================================================= */
 
 .modal form {
-  padding: 22px 24px 24px;
+  padding: 20px 24px 24px;
 }
 
-
-/* =========================================================
-   FORM FIELDS
-   ========================================================= */
-
 .form-field {
-  margin-bottom: 16px;
-
+  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
-
-  gap: 6px;
+  gap: 4px;
 }
 
 .form-field label {
   font-size: 12px;
-
   font-weight: 600;
-
   color: #3e3e3c;
-
-  letter-spacing: 0.1px;
 }
-
-
-/* =========================================================
-   CHECKBOX
-   ========================================================= */
-
-.form-field input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-
-  padding: 0;
-
-  accent-color: var(--sf-blue);
-
-  cursor: pointer;
-
-  vertical-align: middle;
-}
-
-
-/* =========================================================
-   FORM ACTIONS
-   ========================================================= */
 
 .form-actions {
   display: flex;
-
   justify-content: flex-end;
-
   gap: 8px;
-
-  margin-top: 22px;
-
-  border-top: 1px solid var(--border);
-
-  padding-top: 17px;
+  margin-top: 20px;
+  border-top: 1px solid var(--sf-border);
+  padding-top: 16px;
 }
 
-
-/* =========================================================
-   SCROLLBAR
-   ========================================================= */
-
-.modal::-webkit-scrollbar {
-  width: 8px;
+/* ---------- Error banner ---------- */
+.error-banner {
+  background: var(--sf-danger-tint);
+  color: #a3121a;
+  border-left: 4px solid var(--sf-danger);
+  padding: 10px 14px;
+  border-radius: 2px;
+  font-size: 13px;
+  margin: 0 24px 16px;
+  animation: slideDown 0.2s var(--ease);
 }
 
-.modal::-webkit-scrollbar-track {
-  background: #f3f3f3;
-}
-
-.modal::-webkit-scrollbar-thumb {
-  background: #c9c7c5;
-  border-radius: 20px;
-}
-
-.modal::-webkit-scrollbar-thumb:hover {
-  background: #a8a6a4;
-}
-
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-
-@keyframes appFadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes tableAppear {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes overlayFade {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes modalEnter {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.97);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes errorAppear {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 900px) {
-  .header-bar {
-    padding: 12px 18px;
-  }
-
-  .toolbar {
-    margin-left: 18px;
-    margin-right: 18px;
-  }
-
-  table {
-    width: calc(100% - 36px);
-    margin-left: 18px;
-    margin-right: 18px;
-  }
-
-  .app-shell > div[style] {
-    margin-left: 18px !important;
-    margin-right: 18px !important;
-  }
-
-  .error-banner {
-    margin-left: 18px;
-    margin-right: 18px;
-  }
-}
-
-
-@media (max-width: 640px) {
-  .header-bar {
-    min-height: 58px;
-    padding: 10px 14px;
-  }
-
-  .header-bar h1 {
-    font-size: 15px;
-  }
-
-  .header-bar h1::before {
-    width: 25px;
-    height: 25px;
-  }
-
-  .toolbar {
-    align-items: flex-start;
-    gap: 12px;
-    flex-direction: column;
-    margin: 0 14px 14px;
-  }
-
-  .app-shell > div[style] {
-    margin-left: 14px !important;
-    margin-right: 14px !important;
-    padding: 14px !important;
-  }
-
-  table {
-    width: calc(100% - 28px);
-    margin-left: 14px;
-    margin-right: 14px;
-
-    display: block;
-    overflow-x: auto;
-  }
-
-  th {
-    position: static;
-  }
-
-  .error-banner {
-    margin-left: 14px;
-    margin-right: 14px;
-  }
-
-  .modal-overlay {
-    padding: 14px;
-  }
-
-  .modal {
-    width: 100%;
-    max-height: 90vh;
-  }
+.modal .error-banner {
+  margin: 0 0 16px;
 }
