@@ -117,8 +117,6 @@ The frontend calls the backend at `/api/*`, which Vercel rewrites (via `vercel.j
 | `NODE_ENV` | `production` |
 | `NPM_CONFIG_PRODUCTION` | `false` for the Render TypeScript build |
 
-> **Security:** Actual credentials and secrets are stored only in local environment variables and deployment platform environment settings. They are not committed to the repository.
-
 
 ### Frontend (`frontend/.env` locally, or Vercel → Environment Variables)
 
@@ -143,22 +141,6 @@ cd frontend
 npm install
 npm run dev
 ```
-
----
-
-## Deployment
-
-**Backend — Render**
-- Root directory: `backend`
-- Build command: `npm install --include=dev && npm run build`
-- Start command: `npm start`
-- Environment variables as listed above
-
-**Frontend — Vercel**
-- Root directory: `frontend`
-- Framework preset: Vite
-- Environment variable: `VITE_API_URL=/api`
-- `vercel.json` rewrites `/api/:path*` to the Render backend URL
 
 ---
 
