@@ -149,3 +149,11 @@ npm run dev
 > The application does not store or expose your Salesforce password or OAuth tokens in the browser.
 
 ---
+
+## ⭐ Show Your Support
+
+If you like this project, please give it a ⭐ on GitHub — it motivates me to keep building!
+
+---
+
+*Built with ❤️ using React · TypeScript · Salesforce REST API · Node.js · Express*
