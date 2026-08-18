@@ -144,7 +144,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
                     className="btn-secondary btn-small"
                     onClick={() => setEditingRecord(record)}
                   >
-                    Edit
+                    Update
                   </button>
 
                   <button
