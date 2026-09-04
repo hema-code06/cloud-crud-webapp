@@ -103,6 +103,7 @@ export async function describeObjectFields(
   const candidates = allFields
     .filter((f) => f.name !== "Id")
     .filter((f) => !EXCLUDED_TYPES.has(f.type))
+    .filter((f) => !/(Latitude|Longitude)$/.test(f.name))
     .filter((f) => f.createable || f.updateable)
     .map((f) => ({
       name: f.name as string,
