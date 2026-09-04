@@ -13,8 +13,10 @@ export function generatePkcePair() {
   return { verifier, challenge };
 }
 
-
-export function buildAuthorizeUrl(state: string, codeChallenge: string): string {
+export function buildAuthorizeUrl(
+  state: string,
+  codeChallenge: string,
+): string {
   const params = new URLSearchParams({
     response_type: "code",
     client_id: process.env.SF_CLIENT_ID as string,
@@ -28,7 +30,7 @@ export function buildAuthorizeUrl(state: string, codeChallenge: string): string 
 
 export async function exchangeCodeForToken(
   code: string,
-  codeVerifier: string
+  codeVerifier: string,
 ): Promise<SFTokenResponse> {
   const params = new URLSearchParams({
     grant_type: "authorization_code",
@@ -42,13 +44,13 @@ export async function exchangeCodeForToken(
   const res = await axios.post<SFTokenResponse>(
     process.env.SF_TOKEN_URL as string,
     params.toString(),
-    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
   );
   return res.data;
 }
 
 export async function refreshAccessToken(
-  refreshToken: string
+  refreshToken: string,
 ): Promise<SFTokenResponse> {
   const params = new URLSearchParams({
     grant_type: "refresh_token",
@@ -60,11 +62,10 @@ export async function refreshAccessToken(
   const res = await axios.post<SFTokenResponse>(
     process.env.SF_TOKEN_URL as string,
     params.toString(),
-    { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+    { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
   );
   return res.data;
 }
-
 
 function authHeaders(accessToken: string) {
   return { Authorization: `Bearer ${accessToken}` };
@@ -76,7 +77,7 @@ function sobjectsUrl(instanceUrl: string, object: string, suffix = "") {
 
 function queryUrl(instanceUrl: string, soql: string) {
   return `${instanceUrl}/services/data/${SF_API_VERSION}/query/?q=${encodeURIComponent(
-    soql
+    soql,
   )}`;
 }
 
@@ -91,7 +92,7 @@ const EXCLUDED_TYPES = new Set([
 export async function describeObjectFields(
   instanceUrl: string,
   accessToken: string,
-  object: string
+  object: string,
 ): Promise<SFFieldDescribe[]> {
   const res = await axios.get(sobjectsUrl(instanceUrl, object, "/describe/"), {
     headers: authHeaders(accessToken),
@@ -113,15 +114,14 @@ export async function describeObjectFields(
       picklistValues:
         f.type === "picklist" && Array.isArray(f.picklistValues)
           ? f.picklistValues
-            .filter((p: any) => p.active)
-            .map((p: any) => ({ label: p.label, value: p.value }))
+              .filter((p: any) => p.active)
+              .map((p: any) => ({ label: p.label, value: p.value }))
           : undefined,
     }));
 
   candidates.sort((a, b) => {
     const score = (f: SFFieldDescribe) =>
-      (f.name.toLowerCase().includes("name") ? 0 : 1) +
-      (f.required ? 0 : 0.5);
+      (f.name.toLowerCase().includes("name") ? 0 : 1) + (f.required ? 0 : 0.5);
     return score(a) - score(b);
   });
 
@@ -135,7 +135,7 @@ export async function queryRecords(
   object: string,
   fieldNames: string[],
   limit: number,
-  offset: number
+  offset: number,
 ) {
   const fields = ["Id", ...fieldNames].join(", ");
   const soql = `SELECT ${fields} FROM ${object} ORDER BY CreatedDate DESC LIMIT ${limit} OFFSET ${offset}`;
@@ -158,10 +158,13 @@ export async function createRecord(
   instanceUrl: string,
   accessToken: string,
   object: string,
-  data: Record<string, any>
+  data: Record<string, any>,
 ) {
   const res = await axios.post(sobjectsUrl(instanceUrl, object), data, {
-    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    headers: {
+      ...authHeaders(accessToken),
+      "Content-Type": "application/json",
+    },
   });
   return res.data;
 }
@@ -171,10 +174,13 @@ export async function updateRecord(
   accessToken: string,
   object: string,
   id: string,
-  data: Record<string, any>
+  data: Record<string, any>,
 ) {
   await axios.patch(sobjectsUrl(instanceUrl, object, `/${id}`), data, {
-    headers: { ...authHeaders(accessToken), "Content-Type": "application/json" },
+    headers: {
+      ...authHeaders(accessToken),
+      "Content-Type": "application/json",
+    },
   });
   return { success: true };
 }
@@ -183,7 +189,7 @@ export async function deleteRecord(
   instanceUrl: string,
   accessToken: string,
   object: string,
-  id: string
+  id: string,
 ) {
   await axios.delete(sobjectsUrl(instanceUrl, object, `/${id}`), {
     headers: authHeaders(accessToken),

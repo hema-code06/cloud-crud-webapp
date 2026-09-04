@@ -8,7 +8,7 @@ export interface SFField {
   picklistValues?: { label: string; value: string }[];
 }
 
-export type SFRecord = Record<string, any>;
+export type SFRecord = Record<string, unknown>;
 
 export const SF_OBJECTS = [
   "Account",

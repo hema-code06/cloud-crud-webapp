@@ -19,43 +19,52 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  const fetchPage = useCallback(
+    async (pageOffset: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await api.get(`/objects/${objectName}/records`, {
+          params: { offset: pageOffset, limit: PAGE_SIZE },
+        });
+        const newRecords: SFRecord[] = res.data.records;
+        setRecords((prev) =>
+          pageOffset === 0 ? newRecords : [...prev, ...newRecords],
+        );
+        setOffset(pageOffset + newRecords.length);
+        setHasMore(newRecords.length === PAGE_SIZE);
+      } catch {
+        setError("Failed to load records.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [objectName],
+  );
+
   useEffect(() => {
-    setFields([]);
-    setRecords([]);
-    setOffset(0);
-    setHasMore(true);
-    setError(null);
+    let cancelled = false;
 
     api
       .get(`/objects/${objectName}/fields`)
-      .then((res) => setFields(res.data.fields))
-      .catch(() => setError("Failed to load field metadata."));
-  }, [objectName]);
-
-  const loadMore = useCallback(async () => {
-    if (loading || !hasMore || fields.length === 0) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await api.get(`/objects/${objectName}/records`, {
-        params: { offset, limit: PAGE_SIZE },
+      .then((res) => {
+        if (cancelled) return;
+        setFields(res.data.fields);
+        fetchPage(0);
+      })
+      .catch(() => {
+        if (!cancelled) setError("Failed to load field metadata.");
       });
-      const newRecords: SFRecord[] = res.data.records;
-      setRecords((prev) => [...prev, ...newRecords]);
-      setOffset((prev) => prev + newRecords.length);
-      if (newRecords.length < PAGE_SIZE) setHasMore(false);
-    } catch (err) {
-      setError("Failed to load records.");
-    } finally {
-      setLoading(false);
-    }
-  }, [objectName, offset, hasMore, loading, fields]);
 
-  useEffect(() => {
-    if (fields.length > 0 && records.length === 0 && hasMore) {
-      loadMore();
-    }
-  }, [fields]);
+    return () => {
+      cancelled = true;
+    };
+  }, [objectName, fetchPage]);
+
+  const loadMore = useCallback(() => {
+    if (loading || !hasMore || fields.length === 0) return;
+    fetchPage(offset);
+  }, [fields.length, offset, hasMore, loading, fetchPage]);
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -67,7 +76,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           loadMore();
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     observer.observe(el);
@@ -77,22 +86,24 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
   async function handleCreate(values: SFRecord) {
     await api.post(`/objects/${objectName}/records`, values);
     setShowForm(false);
-    setRecords([]);
-    setOffset(0);
-    setHasMore(true);
+    fetchPage(0);
   }
 
   async function handleUpdate(values: SFRecord) {
     if (!editingRecord) return;
-    await api.patch(`/objects/${objectName}/records/${editingRecord.Id}`, values);
+    await api.patch(
+      `/objects/${objectName}/records/${editingRecord.Id}`,
+      values,
+    );
     setRecords((prev) =>
-      prev.map((r) => (r.Id === editingRecord.Id ? { ...r, ...values } : r))
+      prev.map((r) => (r.Id === editingRecord.Id ? { ...r, ...values } : r)),
     );
     setEditingRecord(null);
   }
 
   async function handleDelete(record: SFRecord) {
-    if (!confirm(`Delete this ${objectName} record? This cannot be undone.`)) return;
+    if (!confirm(`Delete this ${objectName} record? This cannot be undone.`))
+      return;
     try {
       await api.delete(`/objects/${objectName}/records/${record.Id}`);
       setRecords((prev) => prev.filter((r) => r.Id !== record.Id));
@@ -128,7 +139,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           </thead>
           <tbody>
             {records.map((record) => (
-              <tr key={record.Id}>
+              <tr key={String(record.Id)}>
                 {fields.map((f) => (
                   <td key={f.name}>{String(record[f.name] ?? "")}</td>
                 ))}
@@ -161,7 +172,11 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
       )}
 
       <div ref={sentinelRef} className="sentinel" />
-      {loading && <div className="loading-row loading-row--active">Loading more records...</div>}
+      {loading && (
+        <div className="loading-row loading-row--active">
+          Loading more records...
+        </div>
+      )}
       {!hasMore && records.length > 0 && (
         <div className="loading-row">No more records.</div>
       )}
@@ -184,7 +199,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           initialValues={viewingRecord}
           readOnly
           onCancel={() => setViewingRecord(null)}
-          onSubmit={async () => { }}
+          onSubmit={async () => {}}
         />
       )}
       {editingRecord && (

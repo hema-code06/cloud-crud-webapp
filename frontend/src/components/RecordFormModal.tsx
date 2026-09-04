@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import type { SFField, SFRecord } from "../types";
 
 interface Props {
@@ -32,6 +33,14 @@ function inputTypeFor(field: SFField): string {
   }
 }
 
+function getErrorMessage(err: unknown): string {
+  if (axios.isAxiosError(err)) {
+    const data = err.response?.data as { error?: string } | undefined;
+    if (data?.error) return data.error;
+  }
+  return "Something went wrong. Please try again.";
+}
+
 export default function RecordFormModal({
   objectName,
   fields,
@@ -44,14 +53,15 @@ export default function RecordFormModal({
   const [values, setValues] = useState<SFRecord>(() => {
     const base: SFRecord = {};
     fields.forEach((f) => {
-      base[f.name] = initialValues?.[f.name] ?? (f.type === "boolean" ? false : "");
+      base[f.name] =
+        initialValues?.[f.name] ?? (f.type === "boolean" ? false : "");
     });
     return base;
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function handleChange(name: string, value: any) {
+  function handleChange(name: string, value: string | boolean) {
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
@@ -61,8 +71,8 @@ export default function RecordFormModal({
     setError(null);
     try {
       await onSubmit(values);
-    } catch (err: any) {
-      setError(err?.response?.data?.error || "Something went wrong. Please try again.");
+    } catch (err) {
+      setError(getErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -95,7 +105,7 @@ export default function RecordFormModal({
                   <select
                     required={!readOnly && field.required}
                     disabled={readOnly}
-                    value={values[field.name] ?? ""}
+                    value={String(values[field.name] ?? "")}
                     onChange={(e) => handleChange(field.name, e.target.value)}
                   >
                     <option value="">-- Select --</option>
@@ -115,9 +125,11 @@ export default function RecordFormModal({
                   <label>
                     <input
                       type="checkbox"
-                      checked={!!values[field.name]}
+                      checked={Boolean(values[field.name])}
                       disabled={readOnly}
-                      onChange={(e) => handleChange(field.name, e.target.checked)}
+                      onChange={(e) =>
+                        handleChange(field.name, e.target.checked)
+                      }
                     />{" "}
                     {field.label}
                   </label>
@@ -134,7 +146,7 @@ export default function RecordFormModal({
                 <input
                   type={inputType}
                   required={!readOnly && field.required}
-                  value={values[field.name] ?? ""}
+                  value={String(values[field.name] ?? "")}
                   onChange={(e) => handleChange(field.name, e.target.value)}
                   readOnly={readOnly}
                 />
@@ -148,7 +160,11 @@ export default function RecordFormModal({
             </button>
 
             {!readOnly && (
-              <button type="submit" className="btn-primary" disabled={submitting}>
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={submitting}
+              >
                 {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create"}
               </button>
             )}

@@ -39,11 +39,13 @@ export default function App() {
         </button>
       </div>
 
-      <div style={{ marginBottom: 20 }}>
+      <div className="object-selector">
         <ObjectDropdown value={selectedObject} onChange={setSelectedObject} />
       </div>
 
-      {selectedObject && <RecordsTable objectName={selectedObject} />}
+      {selectedObject && (
+        <RecordsTable key={selectedObject} objectName={selectedObject} />
+      )}
     </div>
   );
 }

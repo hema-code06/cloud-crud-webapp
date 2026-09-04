@@ -20,7 +20,7 @@ async function main() {
     cors({
       origin: process.env.FRONTEND_URL,
       credentials: true,
-    })
+    }),
   );
 
   let sessionStore: session.Store | undefined = undefined;
@@ -36,7 +36,9 @@ async function main() {
     sessionStore = new RedisStore({ client: redisClient, prefix: "sess:" });
     console.log("Using Redis session store");
   } else {
-    console.log("No REDIS_URL set — using default in-memory session store (dev only)");
+    console.log(
+      "No REDIS_URL set — using default in-memory session store (dev only)",
+    );
   }
 
   app.use(
@@ -51,7 +53,7 @@ async function main() {
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 1000 * 60 * 60 * 8, //8hrs
       },
-    })
+    }),
   );
 
   app.use("/api/auth", authRoutes);

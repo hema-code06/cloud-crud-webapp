@@ -21,7 +21,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
@@ -29,12 +31,18 @@
 
 body {
   margin: 0;
-  font-family: "Salesforce Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-family:
+    "Salesforce Sans",
+    "Segoe UI",
+    -apple-system,
+    BlinkMacSystemFont,
+    Helvetica,
+    Arial,
+    sans-serif;
   background: var(--sf-bg);
   color: var(--sf-text);
 }
 
-/* ---------- Login (unchanged) ---------- */
 .login-screen {
   display: flex;
   flex-direction: column;
@@ -45,7 +53,6 @@ body {
   text-align: center;
 }
 
-/* ---------- App shell ---------- */
 .app-shell {
   max-width: 1200px;
   margin: 0 auto;
@@ -54,8 +61,12 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .header-bar {
@@ -71,8 +82,14 @@ body {
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .header-bar h1 {
@@ -96,7 +113,6 @@ body {
   background-position: center;
 }
 
-/* ---------- Buttons ---------- */
 button {
   cursor: pointer;
   border: 1px solid transparent;
@@ -105,8 +121,11 @@ button {
   font-size: 13px;
   font-weight: 500;
   font-family: inherit;
-  transition: background 0.15s var(--ease), border-color 0.15s var(--ease),
-    box-shadow 0.15s var(--ease), transform 0.1s var(--ease);
+  transition:
+    background 0.15s var(--ease),
+    border-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease),
+    transform 0.1s var(--ease);
 }
 
 button:active:not(:disabled) {
@@ -164,7 +183,6 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-/* ---------- Inputs ---------- */
 select,
 input {
   padding: 8px 10px;
@@ -174,7 +192,9 @@ input {
   font-family: inherit;
   background: #ffffff;
   color: var(--sf-text);
-  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  transition:
+    border-color 0.15s var(--ease),
+    box-shadow 0.15s var(--ease);
 }
 
 select:hover,
@@ -189,7 +209,6 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(1, 118, 211, 0.15);
 }
 
-/* ---------- Toolbar ---------- */
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -205,11 +224,11 @@ input:focus {
   letter-spacing: 0.4px;
 }
 
-.app-shell > div[style] {
+.object-selector {
   padding: 0 24px;
+  margin-bottom: 20px;
 }
 
-/* ---------- Table ---------- */
 table {
   width: calc(100% - 48px);
   margin: 0 24px;
@@ -249,8 +268,14 @@ tbody tr {
 }
 
 @keyframes rowIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 tbody tr:hover {
@@ -261,7 +286,6 @@ tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* ---------- Pagination / loading ---------- */
 .sentinel {
   height: 1px;
 }
@@ -287,10 +311,11 @@ tbody tr:last-child td {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* ---------- Modal ---------- */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -303,8 +328,12 @@ tbody tr:last-child td {
 }
 
 @keyframes overlayIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
@@ -318,8 +347,14 @@ tbody tr:last-child td {
 }
 
 @keyframes modalIn {
-  from { opacity: 0; transform: translateY(10px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modal h2 {
@@ -357,7 +392,6 @@ tbody tr:last-child td {
   padding-top: 16px;
 }
 
-/* ---------- Error banner ---------- */
 .error-banner {
   background: var(--sf-danger-tint);
   color: #a3121a;
