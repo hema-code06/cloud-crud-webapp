@@ -33,6 +33,7 @@ function inputTypeFor(field: SFField): string {
   }
 }
 
+/** Pulls a user-facing message out of a failed API call, falling back to a generic one. */
 function getErrorMessage(err: unknown): string {
   if (axios.isAxiosError(err)) {
     const data = err.response?.data as { error?: string } | undefined;
@@ -53,8 +54,7 @@ export default function RecordFormModal({
   const [values, setValues] = useState<SFRecord>(() => {
     const base: SFRecord = {};
     fields.forEach((f) => {
-      base[f.name] =
-        initialValues?.[f.name] ?? (f.type === "boolean" ? false : "");
+      base[f.name] = initialValues?.[f.name] ?? (f.type === "boolean" ? false : "");
     });
     return base;
   });
@@ -127,9 +127,7 @@ export default function RecordFormModal({
                       type="checkbox"
                       checked={Boolean(values[field.name])}
                       disabled={readOnly}
-                      onChange={(e) =>
-                        handleChange(field.name, e.target.checked)
-                      }
+                      onChange={(e) => handleChange(field.name, e.target.checked)}
                     />{" "}
                     {field.label}
                   </label>
@@ -160,11 +158,7 @@ export default function RecordFormModal({
             </button>
 
             {!readOnly && (
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={submitting}
-              >
+              <button type="submit" className="btn-primary" disabled={submitting}>
                 {submitting ? "Saving..." : isEdit ? "Save Changes" : "Create"}
               </button>
             )}

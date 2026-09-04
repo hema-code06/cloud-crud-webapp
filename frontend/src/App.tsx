@@ -43,9 +43,8 @@ export default function App() {
         <ObjectDropdown value={selectedObject} onChange={setSelectedObject} />
       </div>
 
-      {selectedObject && (
-        <RecordsTable key={selectedObject} objectName={selectedObject} />
-      )}
+      {/* Remounting on object change resets RecordsTable's internal state for free. */}
+      {selectedObject && <RecordsTable key={selectedObject} objectName={selectedObject} />}
     </div>
   );
 }

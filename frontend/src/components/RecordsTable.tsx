@@ -19,6 +19,10 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
+  // Fetches one page of records. The backend resolves field names itself
+  // (via describeObjectFields), so the client only needs to page by offset.
+  // An offset of 0 replaces the current list (first page / after a create);
+  // any other offset appends (infinite-scroll pagination).
   const fetchPage = useCallback(
     async (pageOffset: number) => {
       setLoading(true);
@@ -28,9 +32,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           params: { offset: pageOffset, limit: PAGE_SIZE },
         });
         const newRecords: SFRecord[] = res.data.records;
-        setRecords((prev) =>
-          pageOffset === 0 ? newRecords : [...prev, ...newRecords],
-        );
+        setRecords((prev) => (pageOffset === 0 ? newRecords : [...prev, ...newRecords]));
         setOffset(pageOffset + newRecords.length);
         setHasMore(newRecords.length === PAGE_SIZE);
       } catch {
@@ -39,9 +41,12 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
         setLoading(false);
       }
     },
-    [objectName],
+    [objectName]
   );
 
+  // This component is remounted (via a `key`) whenever the selected object
+  // changes, so this effect only needs to run once per mount: load the
+  // object's field metadata, then load its first page of records.
   useEffect(() => {
     let cancelled = false;
 
@@ -76,7 +81,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           loadMore();
         }
       },
-      { threshold: 1.0 },
+      { threshold: 1.0 }
     );
 
     observer.observe(el);
@@ -91,19 +96,15 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
 
   async function handleUpdate(values: SFRecord) {
     if (!editingRecord) return;
-    await api.patch(
-      `/objects/${objectName}/records/${editingRecord.Id}`,
-      values,
-    );
+    await api.patch(`/objects/${objectName}/records/${editingRecord.Id}`, values);
     setRecords((prev) =>
-      prev.map((r) => (r.Id === editingRecord.Id ? { ...r, ...values } : r)),
+      prev.map((r) => (r.Id === editingRecord.Id ? { ...r, ...values } : r))
     );
     setEditingRecord(null);
   }
 
   async function handleDelete(record: SFRecord) {
-    if (!confirm(`Delete this ${objectName} record? This cannot be undone.`))
-      return;
+    if (!confirm(`Delete this ${objectName} record? This cannot be undone.`)) return;
     try {
       await api.delete(`/objects/${objectName}/records/${record.Id}`);
       setRecords((prev) => prev.filter((r) => r.Id !== record.Id));
@@ -172,11 +173,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
       )}
 
       <div ref={sentinelRef} className="sentinel" />
-      {loading && (
-        <div className="loading-row loading-row--active">
-          Loading more records...
-        </div>
-      )}
+      {loading && <div className="loading-row loading-row--active">Loading more records...</div>}
       {!hasMore && records.length > 0 && (
         <div className="loading-row">No more records.</div>
       )}
@@ -199,7 +196,7 @@ export default function RecordsTable({ objectName }: { objectName: SFObject }) {
           initialValues={viewingRecord}
           readOnly
           onCancel={() => setViewingRecord(null)}
-          onSubmit={async () => {}}
+          onSubmit={async () => { }}
         />
       )}
       {editingRecord && (

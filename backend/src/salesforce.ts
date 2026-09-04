@@ -125,7 +125,57 @@ export async function describeObjectFields(
     return score(a) - score(b);
   });
 
-  const picked = candidates.slice(0, 8);
+  return selectFields(candidates, MAX_FIELDS);
+}
+
+const MAX_FIELDS = 10;
+
+/**
+ * Some Salesforce fields only make sense in pairs — most notably, when
+ * "State and Country/Territory Picklists" is enabled on an org, a
+ * `*State`/`*StateCode` field is a restricted picklist whose valid values
+ * depend on the matching `*Country`/`*CountryCode` field also being set.
+ * Submitting the state alone fails with a Salesforce validation error.
+ *
+ * Given a state-like field name, returns the name of its country
+ * counterpart, or null if the field isn't state-like.
+ */
+function countryCounterpartFor(fieldName: string): string | null {
+  const match = fieldName.match(/^(.*)State(Code)?$/);
+  if (!match) return null;
+  return `${match[1]}Country${match[2] ?? ""}`;
+}
+
+/**
+ * Picks up to `limit` fields from the ranked candidate list. Whenever a
+ * state-like field is picked, its country counterpart is pulled in
+ * alongside it (if it exists among the candidates), so the two are never
+ * split across the cutoff — which is what previously caused Salesforce to
+ * reject creates with a state set but no matching country.
+ */
+function selectFields(
+  candidates: SFFieldDescribe[],
+  limit: number,
+): SFFieldDescribe[] {
+  const byName = new Map(candidates.map((f) => [f.name, f]));
+  const picked: SFFieldDescribe[] = [];
+  const pickedNames = new Set<string>();
+
+  const add = (field: SFFieldDescribe) => {
+    if (pickedNames.has(field.name) || picked.length >= limit) return;
+    picked.push(field);
+    pickedNames.add(field.name);
+  };
+
+  for (const field of candidates) {
+    if (picked.length >= limit) break;
+    add(field);
+
+    const counterpart = countryCounterpartFor(field.name);
+    const counterpartField = counterpart ? byName.get(counterpart) : undefined;
+    if (counterpartField) add(counterpartField);
+  }
+
   return picked;
 }
 
